@@ -12,14 +12,24 @@ export default class MovieDbService {
       const queryString = query.trim().replace(/\s/g, '+')
 
       try {
+        this.checkOnLine()
+
         const result = await fetch(`${this.apiBase}/3/search/movie?api_key=${this.apiKey}&query=${queryString}&page=${page}`)
 
         if (!result.ok) {
           throw new Error('Response Error')
         }
-        return result.json()
+        
+        const movies = (await result.json()).results
+
+        if (movies && !movies.length) {
+          throw new Error('Nothing found')
+        }
+        
+
+        return movies
       } catch (error) {
-        console.error(error);
+        throw new Error(error);
       }
     }
     return undefined
@@ -27,5 +37,11 @@ export default class MovieDbService {
 
   getImage = (path, weight = 300) => {
     return `${this.imageBase}/w${weight}${path}`
+  }
+
+  checkOnLine() {
+    if (!navigator.onLine) {
+      throw new Error('No network connection')
+    }
   }
 }

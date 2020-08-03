@@ -1,50 +1,62 @@
 import React, { Component } from 'react';
 
-import { Row, Col } from 'antd';
-import MovieCard from '../MovieCard/MovieCard';
 import MovieDbService from '../../services/movieDbService';
+import Spinner from '../Spinner/Spinner';
+import ViewError from '../ViewError/ViewError';
+import ViewCards from '../ViewCards/ViewCards';
 
 import 'antd/dist/antd.css';
 import './App.css';
 
 const movieDbService = new MovieDbService();
 export default class App extends Component {
-  state = {};
+  state = {
+    movies: [],
+    loading: true,
+    error: false,
+    errorMessage: '',
+  };
 
   async componentDidMount() {
-    const res = await movieDbService.getMovies('return');
-
-    if (res) {
-      this.setState(res);
-    }
+    this.uploadMovies();
   }
 
-  render() {
-    const { results } = this.state;
+  onError = (error) => {
+    this.setState({
+      loading: false,
+      error: true,
+      errorMessage: error.message,
+    });
+  };
 
-    let cards = null;
-
-    if (results) {
-      cards = results.slice(0, 6).map((movie) => {
-        return (
-          <Col key={movie.id} md={12} sm={24}>
-            <MovieCard movie={movie} imageUrl={movieDbService.getImage(movie.poster_path)} />
-          </Col>
-        );
-      });
+  uploadMovies = async () => {
+    try {
+      const res = await movieDbService.getMovies('retqweqweqeqweqwurn');
+      if (res) {
+        this.setState({
+          movies: res,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      this.onError(error);
     }
+  };
+
+  render() {
+    const { movies, loading, error, errorMessage } = this.state;
+
+    const viewLoading = loading ? <Spinner /> : null;
+    const viewError = error ? <ViewError message={errorMessage} /> : null;
+    const viewCards = !(viewLoading && viewError) ? (
+      <ViewCards movies={movies.slice(0, 6)} getImageUrl={movieDbService.getImage} />
+    ) : null;
 
     return (
       <div className="app">
-        <Row
-          gutter={[
-            { xs: 16, sm: 16, md: 36 },
-            { xs: 20, sm: 20, md: 36 },
-          ]}
-          sm={24}
-        >
-          {cards}
-        </Row>
+        {viewLoading}
+        {viewError}
+        {viewCards}
       </div>
     );
   }
