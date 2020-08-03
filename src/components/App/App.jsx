@@ -23,27 +23,25 @@ export default class App extends Component {
 
   onError = (error) => {
     this.setState({
+      loading: false,
       error: true,
       errorMessage: error.message,
     });
   };
 
-  async uploadMovies() {
+  uploadMovies = async () => {
     try {
       const res = await movieDbService.getMovies('retqweqweqeqweqwurn');
       if (res) {
         this.setState({
           movies: res,
+          loading: false,
         });
       }
     } catch (error) {
       this.onError(error);
-    } finally {
-      this.setState({
-        loading: false,
-      });
     }
-  }
+  };
 
   render() {
     const { movies, loading, error, errorMessage } = this.state;
