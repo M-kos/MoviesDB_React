@@ -25,20 +25,7 @@ export default class MovieDbService {
     return undefined
   }
 
-  getImage = async (path, weight = 300) => {
-    if (path) {
-      try {
-        const result = await fetch(`${this.imageBase}/w${weight}${path}`)
-
-        if (!result.ok) {
-          throw new Error('Image Error')
-        }
-
-        return result
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    return undefined
+  getImage = (path, weight = 300) => {
+    return `${this.imageBase}/w${weight}${path}`
   }
 }
