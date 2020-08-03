@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import MovieDbService from '../../services/movieDbService';
 import Spinner from '../Spinner/Spinner';
+import ViewError from '../ViewError/ViewError';
 import ViewCards from '../ViewCards/ViewCards';
 
 import 'antd/dist/antd.css';
@@ -12,28 +13,53 @@ export default class App extends Component {
   state = {
     movies: [],
     loading: true,
+    error: false,
+    errorMessage: '',
   };
 
   async componentDidMount() {
-    const res = await movieDbService.getMovies('return');
+    this.uploadMovies();
+  }
 
-    if (res && res.results) {
+  onError = (error) => {
+    this.setState({
+      error: true,
+      errorMessage: error.message,
+    });
+  };
+
+  async uploadMovies() {
+    try {
+      const res = await movieDbService.getMovies('retqweqweqeqweqwurn');
+      if (res) {
+        this.setState({
+          movies: res,
+        });
+      }
+    } catch (error) {
+      this.onError(error);
+    } finally {
       this.setState({
-        movies: res.results,
         loading: false,
       });
     }
   }
 
   render() {
-    const { movies, loading } = this.state;
+    const { movies, loading, error, errorMessage } = this.state;
 
-    const view = loading ? (
-      <Spinner />
-    ) : (
+    const viewLoading = loading ? <Spinner /> : null;
+    const viewError = error ? <ViewError message={errorMessage} /> : null;
+    const viewCards = !(viewLoading && viewError) ? (
       <ViewCards movies={movies.slice(0, 6)} getImageUrl={movieDbService.getImage} />
-    );
+    ) : null;
 
-    return <div className="app">{view}</div>;
+    return (
+      <div className="app">
+        {viewLoading}
+        {viewError}
+        {viewCards}
+      </div>
+    );
   }
 }
