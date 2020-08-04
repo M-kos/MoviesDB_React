@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Input } from 'antd';
+
+import './SearchInput.css';
 
 const SearchInput = ({ value, inputHandler }) => {
   return (
-    <div>
-      <input type="text" value={value} onChange={inputHandler} />
+    <div className="input">
+      <Input value={value} onChange={inputHandler} placeholder="Type to search..." />
     </div>
   );
 };
