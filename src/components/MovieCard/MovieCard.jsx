@@ -12,6 +12,10 @@ const MovieCard = ({
   movie: { title, overview: description, release_date: releaseDate, vote_average: titleRating },
   imageUrl,
 }) => {
+  const date = releaseDate ? (
+    <div className="movieCard__date">{format(new Date(releaseDate), 'MMMM d, yyyy')}</div>
+  ) : null;
+
   return (
     <div className="movieCard">
       <img className="movieCard__image" src={imageUrl} alt="poster" />
@@ -20,7 +24,7 @@ const MovieCard = ({
           <h2 className="movieCard__title-inscription">{title}</h2>
           <div className="movieCard__title-rating">{titleRating}</div>
         </div>
-        <div className="movieCard__date">{format(new Date(releaseDate), 'MMMM d, yyyy')}</div>
+        {date}
         <div className="movieCard__genres">Action</div>
         <div className="movieCard__description">{truncateText(description)}</div>
         <div className="movieCard__fill" />

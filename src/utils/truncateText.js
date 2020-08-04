@@ -1,4 +1,4 @@
-function truncateText(text, requiredLength = 200) {
+function truncateText(text = '', requiredLength = 200) {
   if (text.length > requiredLength) {
     const subString = text.slice(0, requiredLength)
 

@@ -8,9 +8,13 @@ const ViewCards = ({ movies, getImageUrl }) => {
 
   if (movies) {
     cards = movies.map((movie) => {
+      const imageUrl = movie.poster_path
+        ? getImageUrl(movie.poster_path)
+        : 'https://via.placeholder.com/150?text=No+Picture';
+
       return (
         <Col key={movie.id} md={12} sm={24}>
-          <MovieCard movie={movie} imageUrl={getImageUrl(movie.poster_path)} />
+          <MovieCard movie={movie} imageUrl={imageUrl} />
         </Col>
       );
     });

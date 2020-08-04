@@ -20,14 +20,17 @@ export default class MovieDbService {
           throw new Error('Response Error')
         }
         
-        const movies = (await result.json()).results
+        const value = await result.json()
 
-        if (movies && !movies.length) {
+        if (value.results && !value.results.length) {
           throw new Error('Nothing found')
         }
         
 
-        return movies
+        return {
+          movies: value.results,
+          total: value.total_results
+        }
       } catch (error) {
         throw new Error(error);
       }
